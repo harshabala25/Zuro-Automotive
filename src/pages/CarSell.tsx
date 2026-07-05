@@ -147,7 +147,7 @@ function SellGuideModal({ onClose }: { onClose: () => void }) {
             { n: 1, title: 'Location & basic info', desc: "State, city, ZIP, and your VIN — hit Auto-Fill to pre-populate make, model, year, engine, and drivetrain. Please double check details, as sometimes the auto-fill may not be 100% accurate." },
             { n: 2, title: 'Vehicle details', desc: 'Colors, mileage, asking price, horsepower, and fuel efficiency. Fuel Efficiency is SOMETIMES auto-filled from your VIN, but please double check it as sometimes the auto-fill may not be 100% accurate.' },
             { n: 3, title: 'Condition & extras', desc: "Title status, owners, accidents, known damage, mods, features, and a short owner's note. Please be as detailed as possible, as it builds trust and makes it stand out with potential buyers" },
-            { n: 4, title: 'Photos & documents', desc: `Up to 10 photos of the car plus your Carfax PDF — both required. Scroll down to see required shots; for the best results, shoot in the shade to avoid glares.` },
+            { n: 4, title: 'Photos & documents', desc: `Up to 10 photos of the car plus a Google Drive link to your Carfax report — both required.` },
           ].map(({ n, title, desc }) => (
             <div key={n} style={{ display: 'flex', gap: 14, background: '#111', border: '1px solid #1e1e1e', borderRadius: 10, padding: '14px 16px', marginBottom: 10 }}>
               <div style={{ width: 28, height: 28, borderRadius: '50%', background: '#01a3fc', color: '#000', fontSize: 13, fontWeight: 900, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>{n}</div>
@@ -160,7 +160,7 @@ function SellGuideModal({ onClose }: { onClose: () => void }) {
           <div style={{ height: 1, background: '#1e1e1e', margin: '20px 0' }} />
           <p style={{ color: '#01a3fc', fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 12 }}>Have these ready</p>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 20 }}>
-            {['Your 17-character VIN', 'Carfax report (PDF)', 'Current mileage', 'Your asking price', 'Up to 10 car photos', 'Title status'].map(item => (
+            {['Your 17-character VIN', 'Carfax report (Google Drive link)', 'Current mileage', 'Your asking price', 'Up to 10 car photos', 'Title status'].map(item => (
               <div key={item} style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#aaa', fontSize: 13 }}>
                 <div style={{ width: 7, height: 7, borderRadius: '50%', background: '#01a3fc', flexShrink: 0 }} />
                 {item}
@@ -208,7 +208,6 @@ export default function CarSell() {
   const [submitted, setSubmitted] = useState(false)
   const [photoError, setPhotoError] = useState('')
   const [isPhotoDragging, setIsPhotoDragging] = useState(false)
-  const [isCarfaxDragging, setIsCarfaxDragging] = useState(false)
   const [form, setForm] = useState({
     state: '', city: '', zip: '',
     make: '', model: '', trim: '', year: '', vin: '',
@@ -226,7 +225,7 @@ export default function CarSell() {
     features: [] as string[],
     owners_note: '',
     photos: [] as File[],
-    carfax: null as File | null,
+    carfax_url: '',
   })
 
   useEffect(() => {
@@ -409,8 +408,12 @@ export default function CarSell() {
     }
     if (s === 3) {
       if (form.photos.length !== 10) errs.push('Exactly 10 photos are required.')
-      if (!form.carfax) errs.push('A Carfax report is required.')
-    }
+        if (!form.carfax_url.trim()) {
+          errs.push('A Carfax report link is required.')
+        } else if (!/^https:\/\/(drive\.google\.com|docs\.google\.com)\//.test(form.carfax_url.trim())) {
+          errs.push('Please enter a valid Google Drive link (must start with https://drive.google.com or https://docs.google.com).')
+        }
+      }
     return errs
   }
 
@@ -459,7 +462,7 @@ export default function CarSell() {
       modifications: form.modifications,
       features: form.features,
       owners_note: form.owners_note,
-      photos: [], carfax_url: null,
+      photos: [], carfax_url: form.carfax_url.trim(),
     }).select().single()
 
     if (insertError) {
@@ -492,20 +495,7 @@ export default function CarSell() {
       return
     }
 
-    let carfaxPath = null
-    if (form.carfax) {
-      const filePath = `${user.id}/${Date.now()}_${form.carfax.name}`
-      const { error: carfaxError } = await supabase.storage.from('carfax').upload(filePath, form.carfax)
-      if (!carfaxError) carfaxPath = filePath
-    }
-
-    if (!carfaxPath) {
-      alert('The Carfax report failed to upload. Please try submitting again.')
-      setSubmitting(false)
-      return
-    }
-
-    const { error: updateError } = await supabase.from('listings').update({ photos: photoUrls, carfax_url: carfaxPath }).eq('id', listing.id)
+    const { error: updateError } = await supabase.from('listings').update({ photos: photoUrls, carfax_url: form.carfax_url.trim() }).eq('id', listing.id)
     if (updateError) { alert('Something went wrong saving your photos: ' + updateError.message); setSubmitting(false); return }
 
     setSubmitting(false)
@@ -989,7 +979,7 @@ export default function CarSell() {
               {step === 3 && (
                 <>
                   <h2 style={{ color: '#fff', fontSize: 18, fontWeight: 900, marginBottom: 4, marginTop: 0 }}>Photos & Documents</h2>
-                  <p style={{ color: '#555', fontSize: 13, fontFamily: 'system-ui, sans-serif', marginBottom: 8 }}>Great photos = more inquiries. Add as many HIGH QUALITY photos as you can.</p>
+                  <p style={{ color: '#aaa', fontSize: 13, fontFamily: 'system-ui, sans-serif', marginBottom: 8 }}>Great photos = more inquiries. Add as many HIGH QUALITY photos as you can.</p>
 
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
                     <label htmlFor="field-photos"
@@ -999,7 +989,7 @@ export default function CarSell() {
                       style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', border: isPhotoDragging ? '2px dashed #01a3fc' : '2px dashed #333', borderRadius: 10, padding: '32px', cursor: 'pointer', backgroundColor: isPhotoDragging ? '#0a1a22' : '#111', gap: 20 }}>
                       <Camera size={32} color="#cccccc" />
                       <span style={{ color: '#aaa', fontSize: 14, fontFamily: 'system-ui, sans-serif' }}>{isPhotoDragging ? 'Drop photos here' : 'Click or drag photos to upload'}</span>
-                      <span style={{ color: '#555', fontSize: 12, fontFamily: 'system-ui, sans-serif' }}>JPG, PNG — up to 10 photos</span>
+                      <span style={{ color: '#aaa', fontSize: 12, fontFamily: 'system-ui, sans-serif' }}>JPG, PNG — up to 10 photos</span>
                       <input id="field-photos" type="file" accept="image/*" multiple style={{ display: 'none' }}
                         onChange={e => { if (e.target.files) { handlePhotoFiles(e.target.files); e.target.value = '' } }} />
                     </label>
@@ -1070,24 +1060,30 @@ export default function CarSell() {
                       </div>
                     )}
 
-                    <label htmlFor="field-carfax"
-                      onDragOver={e => { e.preventDefault(); setIsCarfaxDragging(true) }}
-                      onDragLeave={e => { e.preventDefault(); setIsCarfaxDragging(false) }}
-                      onDrop={e => { e.preventDefault(); setIsCarfaxDragging(false); const dropped = e.dataTransfer.files?.[0]; if (dropped && (dropped.type === 'application/pdf' || dropped.name.toLowerCase().endsWith('.pdf'))) set('carfax', dropped) }}
-                      style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', border: isCarfaxDragging ? '2px dashed #01a3fc' : '2px dashed #333', borderRadius: 10, padding: '24px', cursor: 'pointer', backgroundColor: isCarfaxDragging ? '#0a1a22' : '#111', gap: 8 }}>
-                      <FileText size={32} color="#cccccc" />
-                      <span style={{ color: '#aaa', fontSize: 14, fontFamily: 'system-ui, sans-serif' }}>{isCarfaxDragging ? 'Drop PDF here' : form.carfax ? form.carfax.name : 'Click or drag Carfax PDF to upload'}</span>
-                      <span style={{ color: '#555', fontSize: 12, fontFamily: 'system-ui, sans-serif' }}>PDF only — required</span>
-                      <input id="field-carfax" type="file" accept=".pdf,application/pdf" style={{ display: 'none' }}
-                        onChange={e => { if (e.target.files?.[0]) set('carfax', e.target.files[0]) }} />
+                    <label htmlFor="field-carfax_url" style={labelStyle}>
+                      Carfax Report Link
                     </label>
-
-                    {form.carfax && (
-                      <button onClick={() => set('carfax', null)}
-                        style={{ marginTop: -12, background: 'none', border: 'none', color: '#ff4444', cursor: 'pointer', fontSize: 13, fontFamily: 'system-ui, sans-serif', alignSelf: 'flex-start' }}>
-                        Remove Carfax
-                      </button>
-                    )}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, background: '#111', border: '1px solid #333', borderRadius: 10, padding: '14px 16px' }}>
+                      <FileText size={20} color="#aaa" style={{ flexShrink: 0 }} />
+                      <input
+                        id="field-carfax_url"
+                        type="url"
+                        placeholder="Paste your Google Drive share link here"
+                        value={form.carfax_url}
+                        onChange={e => set('carfax_url', e.target.value)}
+                        style={{ ...inputStyle, border: 'none', background: 'transparent', padding: 0, flex: 1 }}
+                      />
+                      {form.carfax_url && (
+                        <button
+                          onClick={() => set('carfax_url', '')}
+                          style={{ background: 'none', border: 'none', color: '#ff4444', cursor: 'pointer', display: 'flex', padding: 0 }}>
+                          <X size={16} />
+                        </button>
+                      )}
+                    </div>
+                    <p style={{ color: '#aaa', fontSize: 14, fontFamily: 'system-ui, sans-serif', marginTop: 8 }}>
+                      Download your CarFax report and upload it to Google Drive. In Google Drive, right-click your Carfax PDF → Share → "Anyone with the link" → Copy link and paste it here. MAKE SURE IT IS ON VIEW.
+                    </p>
                   </div>
                 </>
               )}

@@ -122,10 +122,6 @@ function getEconomyFields(fuelType: string): { key: keyof Listing; label: string
   }
 }
 
-// ── Simple list-editor section, styled like Owner's Note ─────────────────────
-// View mode : renders a bullet list (shows "None" when empty).
-// Edit mode : each item becomes its own text input with a ✕ to remove it,
-//             plus a "+ Add" button that appends a new blank input.
 function ListSection({
   label,
   color,
@@ -204,7 +200,6 @@ function ListSection({
     </div>
   )
 }
-// ─────────────────────────────────────────────────────────────────────────────
 
 export default function AdminPanel() {
   const [editing, setEditing] = useState(false)
@@ -222,7 +217,6 @@ export default function AdminPanel() {
   const [actionLoading, setActionLoading] = useState(false)
   const [toast, setToast] = useState<{ msg: string; type: 'success' | 'error' } | null>(null)
   const [filter, setFilter] = useState<'pending' | 'approved' | 'sold'>('pending')
-  const [carfaxLoading, setCarfaxLoading] = useState(false)
 
   useEffect(() => {
     async function checkAdmin() {
@@ -323,11 +317,6 @@ export default function AdminPanel() {
       if (photoError) console.error('Failed to delete photo:', filePath, photoError)
     }
 
-    if (selected.carfax_url) {
-      const { error: carfaxError } = await supabase.storage.from('carfax').remove([selected.carfax_url])
-      if (carfaxError) console.error('Failed to delete carfax:', selected.carfax_url, carfaxError)
-    }
-
     const { error } = await supabase.from('listings').delete().eq('id', selected.id)
 
     if (error) { showToast('Failed to reject listing.', 'error'); setActionLoading(false); return }
@@ -373,11 +362,6 @@ export default function AdminPanel() {
       if (photoError) console.error('Failed to delete photo:', filePath, photoError)
     }
 
-    if (selected.carfax_url) {
-      const { error: carfaxError } = await supabase.storage.from('carfax').remove([selected.carfax_url])
-      if (carfaxError) console.error('Failed to delete carfax:', selected.carfax_url, carfaxError)
-    }
-
     const { error } = await supabase.from('listings').delete().eq('id', selected.id)
 
     if (error) { showToast('Failed to delete listing.', 'error'); setActionLoading(false); return }
@@ -386,15 +370,6 @@ export default function AdminPanel() {
     setListings(l => l.filter(x => x.id !== selected.id))
     setSelected(null)
     setActionLoading(false)
-  }
-
-  async function handleViewCarfax() {
-    if (!selected?.carfax_url || carfaxLoading) return
-    setCarfaxLoading(true)
-    const { data, error } = await supabase.storage.from('carfax').createSignedUrl(selected.carfax_url, 60)
-    setCarfaxLoading(false)
-    if (error || !data?.signedUrl) { showToast('Could not load the Carfax report.', 'error'); return }
-    window.open(data.signedUrl, '_blank', 'noopener,noreferrer')
   }
 
   if (!authed) return null
@@ -672,7 +647,7 @@ export default function AdminPanel() {
                 ))}
               </div>
 
-              {/* ── Known Damage ─────────────────────────────────────── */}
+              {/* Known Damage */}
               <ListSection
                 label="Known Damage"
                 color="#ff8080"
@@ -681,7 +656,7 @@ export default function AdminPanel() {
                 onChange={next => editData && setEditData({ ...editData, known_damage: next })}
               />
 
-              {/* ── Modifications ────────────────────────────────────── */}
+              {/* Modifications */}
               <ListSection
                 label="Modifications"
                 color="#01a3fc"
@@ -690,7 +665,7 @@ export default function AdminPanel() {
                 onChange={next => editData && setEditData({ ...editData, modifications: next })}
               />
 
-              {/* ── Features ─────────────────────────────────────────── */}
+              {/* Features */}
               <ListSection
                 label="Features"
                 color="#aaa"
@@ -713,11 +688,14 @@ export default function AdminPanel() {
 
               {/* Carfax */}
               {selected.carfax_url && (
-                <button onClick={handleViewCarfax} disabled={carfaxLoading}
-                  style={{ display: 'inline-flex', alignItems: 'center', gap: 8, backgroundColor: '#111', border: '1px solid #333', borderRadius: 8, padding: '12px 20px', color: '#fff', fontSize: 14, fontWeight: 700, cursor: carfaxLoading ? 'wait' : 'pointer', opacity: carfaxLoading ? 0.6 : 1, fontFamily: 'inherit' }}
+                <a
+                  href={selected.carfax_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: 8, backgroundColor: '#111', border: '1px solid #333', borderRadius: 8, padding: '12px 20px', color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', textDecoration: 'none' }}
                 >
-                  {carfaxLoading ? 'Loading...' : 'View Carfax Report'}
-                </button>
+                  View Carfax Report
+                </a>
               )}
 
             </div>

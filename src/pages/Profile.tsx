@@ -490,9 +490,9 @@ export default function Profile() {
         {/* PENDING LISTINGS — only the owner can see these, kept fully separate from Active so nobody mistakes a car still under review for one that's actually for sale */}
         {isOwnProfile && pendingListings.length > 0 && (
           <div style={{ marginBottom: 40 }}>
-            <h2 style={{ fontSize: 20, fontWeight: 900, marginBottom: 4, color: '#01a3fc' }}>Pending Review</h2>
+            <h2 style={{ fontSize: 20, fontWeight: 900, marginBottom: 4, color: '#fff' }}>Pending Review</h2>
             <p style={{ color: 'rgba(255,255,255,0.67)', fontSize: 13, fontFamily: 'system-ui, sans-serif', marginBottom: 20 }}>
-              {`${pendingListings.length} listing${pendingListings.length > 1 ? 's' : ''} awaiting admin approval — not visible to buyers yet`}
+              {`${pendingListings.length} listing${pendingListings.length > 1 ? 's' : ''} waiting admin approval — not visible to buyers yet`}
             </p>
             <div style={gridStyle}>
               {pendingListings.map(car => <CarCard key={car.id} car={car} />)}

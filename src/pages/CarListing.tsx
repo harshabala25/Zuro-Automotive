@@ -113,14 +113,14 @@ export default function CarListing() {
   }
 
   async function handleViewCarfax() {
-    if (!user) { window.location.href = '/login'; return }
-    if (!car?.carfax_url || carfaxLoading) return
-    setCarfaxLoading(true)
-    const { data, error } = await supabase.storage.from('carfax').createSignedUrl(car.carfax_url, 60)
-    setCarfaxLoading(false)
-    if (error || !data?.signedUrl) { alert('Could not load the Carfax report. Please try again.'); return }
-    window.open(data.signedUrl, '_blank', 'noopener,noreferrer')
-  }
+  if (!user) { window.location.href = '/login'; return }
+  if (!car?.carfax_url || carfaxLoading) return
+  setCarfaxLoading(true)
+  await new Promise(res => setTimeout(res, 400)) // brief loading feel
+  setCarfaxLoading(false)
+  window.open(car.carfax_url, '_blank', 'noopener,noreferrer')
+}
+
 
   function goTo(index: number) {
     const photos = car?.photos || []
@@ -216,7 +216,6 @@ export default function CarListing() {
                     const filePath = decodeURIComponent(photoUrl.split('/car-photos/')[1])
                     await supabase.storage.from('car-photos').remove([filePath])
                   }
-                  if (car.carfax_url) await supabase.storage.from('carfax').remove([car.carfax_url])
                   const { error } = await supabase.from('listings').delete().eq('id', car.id).eq('user_id', user.id)
                   if (error) alert('Failed to delete listing. Please try again.')
                   else navigate('/buy')
