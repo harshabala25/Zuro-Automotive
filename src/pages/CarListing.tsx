@@ -112,13 +112,38 @@ export default function CarListing() {
     setLikeLoading(false)
   }
 
-  async function handleViewCarfax() {
+async function handleViewCarfax() {
   if (!user) { window.location.href = '/login'; return }
   if (!car?.carfax_url || carfaxLoading) return
   setCarfaxLoading(true)
-  await new Promise(res => setTimeout(res, 400)) // brief loading feel
+  await new Promise(res => setTimeout(res, 400))
   setCarfaxLoading(false)
   window.open(car.carfax_url, '_blank', 'noopener,noreferrer')
+}
+
+async function handleDelete() {
+  const confirmed = window.confirm('Are you sure you want to delete this listing? This cannot be undone.')
+  if (!confirmed) return
+
+  const filePaths = (car.photos || [])
+    .map((url: string) => {
+      try {
+        const match = url.match(/\/car-photos\/(.+)/)
+        return match ? decodeURIComponent(match[1]) : null
+      } catch {
+        return null
+      }
+    })
+    .filter((p: string | null): p is string => p !== null)
+
+  if (filePaths.length > 0) {
+    const { error: photoError } = await supabase.storage.from('car-photos').remove(filePaths)
+    if (photoError) console.error('Photo deletion error:', photoError)
+  }
+
+  const { error } = await supabase.from('listings').delete().eq('id', car.id).eq('user_id', user.id)
+  if (error) alert('Failed to delete listing. Please try again.')
+  else navigate('/buy')
 }
 
 
@@ -208,20 +233,11 @@ export default function CarListing() {
                 }}
                 style={{ backgroundColor: 'transparent', border: '1.5px solid #01a3fc', color: '#01a3fc', padding: '8px 16px', borderRadius: 8, fontWeight: 700, fontSize: 12, cursor: 'pointer', letterSpacing: '1px', textTransform: 'uppercase', minHeight: 44 }}
               >MARK AS SOLD</button>
+
               <button
-                onClick={async () => {
-                  const confirmed = window.confirm('Are you sure you want to delete this listing? This cannot be undone.')
-                  if (!confirmed) return
-                  for (const photoUrl of car.photos) {
-                    const filePath = decodeURIComponent(photoUrl.split('/car-photos/')[1])
-                    await supabase.storage.from('car-photos').remove([filePath])
-                  }
-                  const { error } = await supabase.from('listings').delete().eq('id', car.id).eq('user_id', user.id)
-                  if (error) alert('Failed to delete listing. Please try again.')
-                  else navigate('/buy')
-                }}
+                onClick={handleDelete}
                 style={{ backgroundColor: 'transparent', border: '1.5px solid #ff4444', color: '#ff4444', padding: '8px 16px', borderRadius: 8, fontWeight: 700, fontSize: 12, cursor: 'pointer', letterSpacing: '1px', textTransform: 'uppercase', minHeight: 44 }}
-              >DELETE</button>
+              >DELETE</button>          
             </div>
           ) : null
         )

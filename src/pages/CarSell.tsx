@@ -169,17 +169,10 @@ function SellGuideModal({ onClose }: { onClose: () => void }) {
           </div>
           <div style={{ background: '#0a1a0a', border: '1px solid #1a3a1a', borderRadius: 8, padding: '12px 16px' }}>
             <div style={{ color: '#888', fontSize: 13, lineHeight: 1.5 }}>
-              <strong style={{ color: '#aaa' }}>Required Shots:</strong>
-              <p>(Exterior) Front 3/4</p>
-              <p>(Exterior) Rear 3/4</p>
-              <p>(Exterior) Driver's side profile</p>
-              <p>(Exterior) Front straight on</p>
-              <p>(Exterior) Rear straight on</p>
-              <p>(Interior) Dashboard/infotainment — full dash from passenger seat</p>
-              <p>(Interior) Driver's seat — steering wheel, gauges, door panel</p>
-              <p>(Interior) Rear seats — legroom, condition</p>
-              <p>(Interior) Center console — shifter, cupholders, controls</p>
-              <p>(Interior) Trunk/cargo area — open, showing space and condition</p>
+              <strong style={{ color: '#aaa' }}>Photo Policy:</strong>
+              <p>We're not expecting proffessional photography; all we ask for is for 10 clear enough photos. Submit 5 exterior and 5 interior shots, failure to do so will result in
+                your listing not being approved on to the website.
+              </p>
             </div>
           </div>
         </div>

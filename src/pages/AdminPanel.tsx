@@ -677,7 +677,7 @@ export default function AdminPanel() {
               {/* Owner's Note */}
               {(selected.owners_note || editing) && (
                 <div style={{ backgroundColor: '#0a0a0a', border: `1px solid ${editing ? '#01a3fc' : '#1a1a1a'}`, borderRadius: 10, padding: '16px 20px', marginBottom: 20 }}>
-                  <p style={{ color: '#555', fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', margin: '0 0 8px' }}>Owner's Note</p>
+                  <p style={{ color: '#aaa', fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', margin: '0 0 8px' }}>Owner's Note</p>
                   {editing && editData ? (
                     <textarea value={editData.owners_note || ''} onChange={e => setEditData({ ...editData, owners_note: e.target.value })} rows={4} style={{ ...inputStyle, resize: 'vertical', lineHeight: 1.7 }} />
                   ) : (
