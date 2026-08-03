@@ -421,9 +421,13 @@ async function handleDelete() {
         <div style={{ border: '1px solid #01a3fc', borderRadius: '10px', padding: '16px', backgroundColor: '#0a0a0a' }}>
           <div style={{ color: '#01a3fc', fontSize: 13, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', marginBottom: 6 }}>⚠ Zuro Disclaimer</div>
           <p style={{ color: '#aaa', lineHeight: 1.8, fontSize: 13, margin: 0 }}>
-            While we strive to ensure the accuracy of our listings, all vehicle information is provided directly by the seller.
-            If we believe a listing to be suspicious, we will take it down. However, buyers are independently responsible for verifying all details—including the vehicle's actual condition, history, and any known flaws—and ensuring the vehicle can be legally registered and driven in their location.
-            All sales agreements and deposits are finalized directly with the seller and are subject to their respective terms. We are not responsible for any disputes, losses, or inaccuracies related to a listing or transaction.
+            
+            Zuro is a platform that connects private buyers and sellers of used vehicles. We are not a party to any transaction, do not buy, sell, or take ownership of any vehicle, and do not handle payment, financing, or delivery.
+
+            Before a listing goes live, our team reviews the VIN, submitted documentation, and photos for consistency and completeness. This review is intended to reduce clearly fraudulent or inaccurate listings, but it is not a guarantee of a vehicle's condition, history, or value. Vehicle history reports (such as Carfax) are provided by the seller and reflect data reported to the provider, which may not capture every issue.
+
+            Buyers and sellers are responsible for independently verifying vehicle condition, ownership, and legal title, and for arranging and completing their own transaction, including payment and any applicable inspections. Zuro is not responsible for the accuracy of listing content, the conduct of any user, or any dispute, loss, or damage arising from a transaction between users.
+
           </p>
         </div>
       </div>
