@@ -139,15 +139,18 @@ function SellGuideModal({ onClose }: { onClose: () => void }) {
           <span style={{ color: '#000', fontSize: 13, fontWeight: 700, opacity: 0.6, letterSpacing: 1, textTransform: 'uppercase' }}>EST ~5 min Read</span>
         </div>
         <div style={{ padding: 28, overflowY: 'auto', flex: 1 }}>
-          <p style={{ color: '#aaa', fontSize: 14, lineHeight: 1.6, marginBottom: 24, borderLeft: '3px solid #01a3fc', paddingLeft: 14 }}>
-            Before you start, here's how the listing process is going to look like.
+          <p style={{ color: '#aaa', fontSize: 14, lineHeight: 1.6, marginBottom: 8, borderLeft: '3px solid #01a3fc', paddingLeft: 14 }}>
+            Before you start, here's what the listing process looks like.
+          </p>
+          <p style={{ color: '#666', fontSize: 13, lineHeight: 1.5, marginBottom: 24, paddingLeft: 14 }}>
+            
           </p>
           <p style={{ color: '#01a3fc', fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 12 }}>The 4 steps</p>
           {[
-            { n: 1, title: 'Location & basic info', desc: "State, city, ZIP, and your VIN — hit Auto-Fill to pre-populate make, model, year, engine, and drivetrain. Please double check details, as sometimes the auto-fill may not be 100% accurate." },
-            { n: 2, title: 'Vehicle details', desc: 'Colors, mileage, asking price, horsepower, and fuel efficiency. Fuel Efficiency is SOMETIMES auto-filled from your VIN, but please double check it as sometimes the auto-fill may not be 100% accurate.' },
-            { n: 3, title: 'Condition & extras', desc: "Title status, owners, accidents, known damage, mods, features, and a short owner's note. Please be as detailed as possible, as it builds trust and makes it stand out with potential buyers" },
-            { n: 4, title: 'Photos & documents', desc: `Up to 10 photos of the car plus a Google Drive link to your Carfax report — both required.` },
+            { n: 1, title: 'Location & basic info', desc: 'State, City, ZIP, and your VIN — Auto-Fill pre-populates make, model, year, engine, and drivetrain. Worth double-checking' },
+            { n: 2, title: 'Vehicle details', desc: 'Colors, Mileage, Asking price, Horsepower, and Fuel Efficiency.' },
+            { n: 3, title: 'Condition & extras', desc: "Title Status, Owners, Accidents, Damage, Mos, Features, and a short Owner's note." },
+            { n: 4, title: 'Photos & documents', desc: '10 photos (5 exterior, 5 interior) plus a Google Drive link to your Carfax report — both required.' },
           ].map(({ n, title, desc }) => (
             <div key={n} style={{ display: 'flex', gap: 14, background: '#111', border: '1px solid #1e1e1e', borderRadius: 10, padding: '14px 16px', marginBottom: 10 }}>
               <div style={{ width: 28, height: 28, borderRadius: '50%', background: '#01a3fc', color: '#000', fontSize: 13, fontWeight: 900, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>{n}</div>
@@ -160,7 +163,7 @@ function SellGuideModal({ onClose }: { onClose: () => void }) {
           <div style={{ height: 1, background: '#1e1e1e', margin: '20px 0' }} />
           <p style={{ color: '#01a3fc', fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 12 }}>Have these ready</p>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 20 }}>
-            {['Your 17-character VIN', 'Carfax report (Google Drive link)', 'Current mileage', 'Your asking price', 'Up to 10 car photos', 'Title status'].map(item => (
+            {['Your 17-character VIN', 'Carfax report (Google Drive link)', 'Current mileage', 'Your asking price', '10 photos (5 exterior, 5 interior)', 'Title status'].map(item => (
               <div key={item} style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#aaa', fontSize: 13 }}>
                 <div style={{ width: 7, height: 7, borderRadius: '50%', background: '#01a3fc', flexShrink: 0 }} />
                 {item}
@@ -170,9 +173,8 @@ function SellGuideModal({ onClose }: { onClose: () => void }) {
           <div style={{ background: '#0a1a0a', border: '1px solid #1a3a1a', borderRadius: 8, padding: '12px 16px' }}>
             <div style={{ color: '#888', fontSize: 13, lineHeight: 1.5 }}>
               <strong style={{ color: '#aaa' }}>Photo Policy:</strong>
-              <p>We're not expecting proffessional photography; all we ask for is for 10 clear enough photos. Submit 5 exterior and 5 interior shots, failure to do so will result in
-                your listing not being approved on to the website.
-              </p>
+              <p>5 exterior, 5 interior — no professional photography needed, just good lighting. Listings missing either won't be approved.             
+                Listings are reviewed before going live — we'll let you know once yours is approved.</p>
             </div>
           </div>
         </div>
@@ -401,13 +403,58 @@ export default function CarSell() {
     }
     if (s === 3) {
       if (form.photos.length !== 10) errs.push('Exactly 10 photos are required.')
-        if (!form.carfax_url.trim()) {
-          errs.push('A Carfax report link is required.')
-        } else if (!/^https:\/\/(drive\.google\.com|docs\.google\.com)\//.test(form.carfax_url.trim())) {
-          errs.push('Please enter a valid Google Drive link (must start with https://drive.google.com or https://docs.google.com).')
-        }
+      if (!form.carfax_url.trim()) {
+        errs.push('A Carfax report link is required.')
+      } else if (!/^https:\/\/(drive\.google\.com|docs\.google\.com)\//.test(form.carfax_url.trim())) {
+        errs.push('Please enter a valid Google Drive link (must start with https://drive.google.com or https://docs.google.com).')
       }
+    }
     return errs
+  }
+
+  function getErrorFieldIds(errs: string[]): Set<string> {
+    const map: Record<string, string> = {
+      'State is required.': 'field-state',
+      'City is required.': 'field-city',
+      'ZIP code is required.': 'field-zip',
+      'ZIP code must be 5 digits.': 'field-zip',
+      'Make is required.': 'field-make',
+      'Model is required.': 'field-model',
+      'Year is required.': 'field-year',
+      'VIN is required.': 'field-vin',
+      'VIN must be exactly 17 characters.': 'field-vin',
+      'Body style is required.': 'field-body_style',
+      'Fuel type is required.': 'field-fuel_type',
+      'Drivetrain is required.': 'field-drivetrain',
+      'Engine type is required.': 'field-engine_type',
+      'Engine aspiration is required.': 'field-engine_aspiration',
+      'Engine displacement is required.': 'field-engine_displacement',
+      'Motor type is required.': 'field-electric_motor_type',
+      'Transmission type is required.': 'field-transmission',
+      'Number of transmission speeds is required.': 'field-transmission_speeds',
+      'Exterior color is required.': 'field-exterior_color',
+      'Interior color is required.': 'field-interior_color',
+      'Horsepower is required.': 'field-horsepower',
+      'Horsepower must be greater than 0.': 'field-horsepower',
+      'Mileage is required.': 'field-mileage',
+      'Mileage cannot be negative.': 'field-mileage',
+      'Price is required.': 'field-price',
+      'Price must be greater than 0.': 'field-price',
+      'City MPG is required.': 'field-mpg_city',
+      'Highway MPG is required.': 'field-mpg_highway',
+      'City MPGe is required.': 'field-mpge_city',
+      'Highway MPGe is required.': 'field-mpge_highway',
+      'Electric range is required.': 'field-range_miles',
+      'Title status is required.': 'field-title_status',
+      'Number of owners is required.': 'field-num_owners',
+      'Number of owners must be at least 1.': 'field-num_owners',
+      'Number of accidents is required.': 'field-num_accidents',
+      "Owner's note is required.": 'field-owners_note',
+      'Exactly 10 photos are required.': 'field-photos',
+      'A Carfax report link is required.': 'field-carfax_url',
+      'Please enter a valid Google Drive link (must start with https://drive.google.com or https://docs.google.com).': 'field-carfax_url',
+    }
+    return new Set(errs.map(e => map[e]).filter(Boolean))
   }
 
   function handleNext() {
@@ -505,6 +552,9 @@ export default function CarSell() {
     set('photos', [...form.photos, ...compressed].slice(0, 10))
   }
 
+  const errorFieldIds = getErrorFieldIds(errors)
+  const err = (id: string) => errorFieldIds.has(id)
+
   const inputStyle = {
     width: '100%', padding: '11px 14px', backgroundColor: '#111',
     border: '1px solid #333', borderRadius: 8, color: '#fff',
@@ -541,7 +591,11 @@ export default function CarSell() {
 
   return (
     <div style={{ backgroundColor: '#000', minHeight: '100vh' }}>
-      <style>{`@keyframes zuro-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
+      <style>{`
+        @keyframes zuro-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .zuro-field-error { border: 2px solid #ff4444 !important; border-radius: 8px !important; }
+        .zuro-wrapper-error { border: 2px solid #ff4444 !important; }
+      `}</style>
 
       {showGuide && <SellGuideModal onClose={() => setShowGuide(false)} />}
 
@@ -588,7 +642,6 @@ export default function CarSell() {
                   </div>
                 ))}
               </div>
-              {/* Mobile: show current step label below bar */}
               {isMobile && (
                 <p style={{ textAlign: 'center', color: '#01a3fc', fontSize: 12, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', marginTop: 12 }}>
                   Step {step + 1}: {STEPS[step]}
@@ -620,7 +673,7 @@ export default function CarSell() {
                   <div style={{ display: 'grid', gridTemplateColumns: col3, gap: 14 }}>
                     <div>
                       <label htmlFor="field-state" style={labelStyle}>State</label>
-                      <select id="field-state" value={form.state} onChange={e => set('state', e.target.value)} style={selectStyle}>
+                      <select id="field-state" value={form.state} onChange={e => set('state', e.target.value)} style={selectStyle} className={err('field-state') ? 'zuro-field-error' : ''}>
                         <option value="">Select</option>
                         {US_STATES.map(s => <option key={s}>{s}</option>)}
                       </select>
@@ -629,13 +682,13 @@ export default function CarSell() {
                       <label htmlFor="field-city" style={labelStyle}>City</label>
                       <input id="field-city" placeholder="e.g. Dallas" value={form.city}
                         onChange={e => { if (/^[a-zA-Z\s\-'.]*$/.test(e.target.value)) set('city', e.target.value) }}
-                        style={inputStyle} />
+                        style={inputStyle} className={err('field-city') ? 'zuro-field-error' : ''} />
                     </div>
                     <div>
                       <label htmlFor="field-zip" style={labelStyle}>ZIP Code</label>
                       <input id="field-zip" placeholder="e.g. 75001" value={form.zip}
                         onChange={e => { const d = e.target.value.replace(/\D/g, ''); if (d.length <= 5) set('zip', d) }}
-                        style={inputStyle} inputMode="numeric" />
+                        style={inputStyle} className={err('field-zip') ? 'zuro-field-error' : ''} inputMode="numeric" />
                     </div>
                   </div>
 
@@ -645,7 +698,8 @@ export default function CarSell() {
                       <input id="field-vin" placeholder="Enter your 17-character VIN to auto-fill details"
                         value={form.vin} maxLength={17}
                         onChange={e => { const cleaned = e.target.value.toUpperCase().replace(/[^A-HJ-NPR-Z0-9]/g, '').slice(0, 17); set('vin', cleaned); setVinDecoded(false); setVinError('') }}
-                        style={{ ...inputStyle, borderColor: vinDecoded ? '#00cc66' : vinError ? '#ff4444' : '#333', paddingRight: vinDecoding ? 40 : 14 }} />
+                        style={{ ...inputStyle, borderColor: vinDecoded ? '#00cc66' : vinError ? '#ff4444' : '#333', paddingRight: vinDecoding ? 40 : 14 }}
+                        className={err('field-vin') ? 'zuro-field-error' : ''} />
                       {vinDecoding && (
                         <span style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', color: '#01a3fc', display: 'flex' }}>
                           <Loader2 size={16} style={{ animation: 'zuro-spin 0.8s linear infinite' }} />
@@ -663,21 +717,21 @@ export default function CarSell() {
                   <div style={{ display: 'grid', gridTemplateColumns: col2, gap: 14 }}>
                     <div>
                       <label htmlFor="field-make" style={labelStyle}>Make</label>
-                      <select id="field-make" value={form.make} onChange={e => handleMakeChange(e.target.value)} style={selectStyle}>
+                      <select id="field-make" value={form.make} onChange={e => handleMakeChange(e.target.value)} style={selectStyle} className={err('field-make') ? 'zuro-field-error' : ''}>
                         <option value="">Select Make</option>
                         {MAKES.map(m => <option key={m}>{m}</option>)}
                       </select>
                     </div>
                     <div>
                       <label htmlFor="field-model" style={labelStyle}>Model</label>
-                      <select id="field-model" value={form.model} onChange={e => handleModelChange(e.target.value)} disabled={!form.make} style={{ ...selectStyle, opacity: !form.make ? 0.4 : 1 }}>
+                      <select id="field-model" value={form.model} onChange={e => handleModelChange(e.target.value)} disabled={!form.make} style={{ ...selectStyle, opacity: !form.make ? 0.4 : 1 }} className={err('field-model') ? 'zuro-field-error' : ''}>
                         <option value="">Select Model</option>
                         {availableModels.map(m => <option key={m}>{m}</option>)}
                       </select>
                     </div>
                     <div>
                       <label htmlFor="field-year" style={labelStyle}>Year</label>
-                      <select id="field-year" value={form.year} onChange={e => set('year', e.target.value)} style={selectStyle}>
+                      <select id="field-year" value={form.year} onChange={e => set('year', e.target.value)} style={selectStyle} className={err('field-year') ? 'zuro-field-error' : ''}>
                         <option value="">Select</option>
                         {YEARS_DESCENDING.map(t => <option key={t}>{t}</option>)}
                       </select>
@@ -704,7 +758,7 @@ export default function CarSell() {
                   <div style={{ display: 'grid', gridTemplateColumns: col2, gap: 14 }}>
                     <div>
                       <label htmlFor="field-body_style" style={labelStyle}>Body Style</label>
-                      <select id="field-body_style" value={form.body_style} onChange={e => set('body_style', e.target.value)} style={selectStyle}>
+                      <select id="field-body_style" value={form.body_style} onChange={e => set('body_style', e.target.value)} style={selectStyle} className={err('field-body_style') ? 'zuro-field-error' : ''}>
                         <option value="">Select</option>
                         {BODY_STYLES.map(b => <option key={b}>{b}</option>)}
                       </select>
@@ -713,14 +767,14 @@ export default function CarSell() {
                       <label htmlFor="field-fuel_type" style={labelStyle}>Fuel Type</label>
                       <select id="field-fuel_type" value={form.fuel_type}
                         onChange={e => { set('fuel_type', e.target.value); set('transmission', ''); set('transmission_speeds', ''); set('engine_type', ''); set('engine_aspiration', ''); set('engine_displacement', ''); set('electric_motor_type', '') }}
-                        style={selectStyle}>
+                        style={selectStyle} className={err('field-fuel_type') ? 'zuro-field-error' : ''}>
                         <option value="">Select</option>
                         {FUEL_TYPES.map(f => <option key={f}>{f}</option>)}
                       </select>
                     </div>
                     <div>
                       <label htmlFor="field-drivetrain" style={labelStyle}>Drivetrain</label>
-                      <select id="field-drivetrain" value={form.drivetrain} onChange={e => set('drivetrain', e.target.value)} style={selectStyle}>
+                      <select id="field-drivetrain" value={form.drivetrain} onChange={e => set('drivetrain', e.target.value)} style={selectStyle} className={err('field-drivetrain') ? 'zuro-field-error' : ''}>
                         <option value="">Select</option>
                         {DRIVETRAINS.map(d => <option key={d}>{d}</option>)}
                       </select>
@@ -728,7 +782,7 @@ export default function CarSell() {
                     {HAS_TRANSMISSION.includes(form.fuel_type) && (
                       <div>
                         <label htmlFor="field-transmission" style={labelStyle}>Transmission Type</label>
-                        <select id="field-transmission" value={form.transmission} onChange={e => { set('transmission', e.target.value); set('transmission_speeds', '') }} style={selectStyle}>
+                        <select id="field-transmission" value={form.transmission} onChange={e => { set('transmission', e.target.value); set('transmission_speeds', '') }} style={selectStyle} className={err('field-transmission') ? 'zuro-field-error' : ''}>
                           <option value="">Select</option>
                           <option value="Automatic">Automatic</option>
                           <option value="Manual">Manual</option>
@@ -738,7 +792,7 @@ export default function CarSell() {
                     {form.transmission && HAS_TRANSMISSION.includes(form.fuel_type) && (
                       <div>
                         <label htmlFor="field-transmission_speeds" style={labelStyle}>Number of Speeds</label>
-                        <select id="field-transmission_speeds" value={form.transmission_speeds} onChange={e => set('transmission_speeds', e.target.value)} style={selectStyle}>
+                        <select id="field-transmission_speeds" value={form.transmission_speeds} onChange={e => set('transmission_speeds', e.target.value)} style={selectStyle} className={err('field-transmission_speeds') ? 'zuro-field-error' : ''}>
                           <option value="">Select</option>
                           {form.transmission === 'Automatic' && <option value="CVT">CVT</option>}
                           {[1,2,3,4,5,6,7,8,9,10].map(n => <option key={n} value={`${n}`}>{n}-Speed</option>)}
@@ -753,14 +807,14 @@ export default function CarSell() {
                       <div style={{ display: 'grid', gridTemplateColumns: col3, gap: 14 }}>
                         <div>
                           <label htmlFor="field-engine_type" style={labelStyle}>Engine Type</label>
-                          <select id="field-engine_type" value={form.engine_type} onChange={e => set('engine_type', e.target.value)} style={selectStyle}>
+                          <select id="field-engine_type" value={form.engine_type} onChange={e => set('engine_type', e.target.value)} style={selectStyle} className={err('field-engine_type') ? 'zuro-field-error' : ''}>
                             <option value="">Select</option>
                             {ENGINE_TYPES.map(t => <option key={t}>{t}</option>)}
                           </select>
                         </div>
                         <div>
                           <label htmlFor="field-engine_aspiration" style={labelStyle}>Aspiration</label>
-                          <select id="field-engine_aspiration" value={form.engine_aspiration} onChange={e => set('engine_aspiration', e.target.value)} style={selectStyle}>
+                          <select id="field-engine_aspiration" value={form.engine_aspiration} onChange={e => set('engine_aspiration', e.target.value)} style={selectStyle} className={err('field-engine_aspiration') ? 'zuro-field-error' : ''}>
                             <option value="">Select</option>
                             {ENGINE_ASPIRATIONS.map(a => <option key={a}>{a}</option>)}
                           </select>
@@ -770,7 +824,7 @@ export default function CarSell() {
                           <input id="field-engine_displacement" type="number" step="0.1" placeholder="e.g. 3.0" value={form.engine_displacement}
                             onChange={e => set('engine_displacement', e.target.value)}
                             onBlur={e => { const val = e.target.value; if (val === '') return; const num = parseFloat(val); if (isNaN(num)) return; const rounded = Math.round(num * 10) / 10; set('engine_displacement', Number.isInteger(rounded) ? `${rounded}.0` : String(rounded)) }}
-                            style={inputStyle} />
+                            style={inputStyle} className={err('field-engine_displacement') ? 'zuro-field-error' : ''} />
                         </div>
                       </div>
                     </>
@@ -781,7 +835,7 @@ export default function CarSell() {
                       {sectionDivider('Motor Details')}
                       <div>
                         <label htmlFor="field-electric_motor_type" style={labelStyle}>Motor Type</label>
-                        <select id="field-electric_motor_type" value={form.electric_motor_type} onChange={e => set('electric_motor_type', e.target.value)} style={selectStyle}>
+                        <select id="field-electric_motor_type" value={form.electric_motor_type} onChange={e => set('electric_motor_type', e.target.value)} style={selectStyle} className={err('field-electric_motor_type') ? 'zuro-field-error' : ''}>
                           <option value="">Select</option>
                           {ELECTRIC_MOTOR_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
                         </select>
@@ -802,14 +856,14 @@ export default function CarSell() {
                   <div style={{ display: 'grid', gridTemplateColumns: col2, gap: 14 }}>
                     <div>
                       <label htmlFor="field-exterior_color" style={labelStyle}>Exterior Color</label>
-                      <select id="field-exterior_color" value={form.exterior_color} onChange={e => set('exterior_color', e.target.value)} style={selectStyle}>
+                      <select id="field-exterior_color" value={form.exterior_color} onChange={e => set('exterior_color', e.target.value)} style={selectStyle} className={err('field-exterior_color') ? 'zuro-field-error' : ''}>
                         <option value="">Select</option>
                         {EXTERIOR_COLORS.map(c => <option key={c}>{c}</option>)}
                       </select>
                     </div>
                     <div>
                       <label htmlFor="field-interior_color" style={labelStyle}>Interior Color</label>
-                      <select id="field-interior_color" value={form.interior_color} onChange={e => set('interior_color', e.target.value)} style={selectStyle}>
+                      <select id="field-interior_color" value={form.interior_color} onChange={e => set('interior_color', e.target.value)} style={selectStyle} className={err('field-interior_color') ? 'zuro-field-error' : ''}>
                         <option value="">Select</option>
                         {INTERIOR_COLORS.map(c => <option key={c}>{c}</option>)}
                       </select>
@@ -821,19 +875,19 @@ export default function CarSell() {
                       <label htmlFor="field-horsepower" style={labelStyle}>Horsepower</label>
                       <input id="field-horsepower" type="text" placeholder="e.g. 200" value={form.horsepower}
                         onChange={e => { const raw = e.target.value.replace(/,/g, ''); if (!/^\d*$/.test(raw)) return; const num = parseInt(raw); if (num > 3000) return; set('horsepower', raw ? num.toLocaleString() : '') }}
-                        style={inputStyle} />
+                        style={inputStyle} className={err('field-horsepower') ? 'zuro-field-error' : ''} />
                     </div>
                     <div>
                       <label htmlFor="field-mileage" style={labelStyle}>Mileage</label>
                       <input id="field-mileage" type="text" placeholder="e.g. 32,000" value={form.mileage}
                         onChange={e => { const raw = e.target.value.replace(/,/g, ''); if (!/^\d*$/.test(raw)) return; const num = parseInt(raw); if (num > 2_000_000) return; set('mileage', raw ? parseInt(raw).toLocaleString() : '') }}
-                        style={inputStyle} />
+                        style={inputStyle} className={err('field-mileage') ? 'zuro-field-error' : ''} />
                     </div>
                     <div>
                       <label htmlFor="field-price" style={labelStyle}>Price</label>
                       <input id="field-price" type="text" placeholder="e.g. 43,000" value={form.price}
                         onChange={e => { const raw = e.target.value.replace(/,/g, ''); if (!/^\d*$/.test(raw)) return; const num = parseInt(raw); if (num > 999_999) return; set('price', raw ? num.toLocaleString() : '') }}
-                        style={inputStyle} />
+                        style={inputStyle} className={err('field-price') ? 'zuro-field-error' : ''} />
                     </div>
                   </div>
 
@@ -842,11 +896,11 @@ export default function CarSell() {
                       <>
                         <div>
                           <label htmlFor="field-mpg_city" style={labelStyle}>City MPG</label>
-                          <input id="field-mpg_city" type="number" placeholder="e.g. 22" value={form.mpg_city} onChange={e => set('mpg_city', e.target.value === '' ? '' : String(Math.min(Math.max(Number(e.target.value), 0), 70)))} style={inputStyle} min={0} max={70} />
+                          <input id="field-mpg_city" type="number" placeholder="e.g. 22" value={form.mpg_city} onChange={e => set('mpg_city', e.target.value === '' ? '' : String(Math.min(Math.max(Number(e.target.value), 0), 70)))} style={inputStyle} className={err('field-mpg_city') ? 'zuro-field-error' : ''} min={0} max={70} />
                         </div>
                         <div>
                           <label htmlFor="field-mpg_highway" style={labelStyle}>Highway MPG</label>
-                          <input id="field-mpg_highway" type="number" placeholder="e.g. 30" value={form.mpg_highway} onChange={e => set('mpg_highway', e.target.value === '' ? '' : String(Math.min(Math.max(Number(e.target.value), 0), 70)))} style={inputStyle} min={0} max={70} />
+                          <input id="field-mpg_highway" type="number" placeholder="e.g. 30" value={form.mpg_highway} onChange={e => set('mpg_highway', e.target.value === '' ? '' : String(Math.min(Math.max(Number(e.target.value), 0), 70)))} style={inputStyle} className={err('field-mpg_highway') ? 'zuro-field-error' : ''} min={0} max={70} />
                         </div>
                       </>
                     )}
@@ -854,11 +908,11 @@ export default function CarSell() {
                       <>
                         <div>
                           <label htmlFor="field-mpge_city" style={labelStyle}>City MPGe</label>
-                          <input id="field-mpge_city" type="number" placeholder="e.g. 84" value={form.mpge_city} onChange={e => set('mpge_city', e.target.value === '' ? '' : String(Math.min(Math.max(Number(e.target.value), 0), 150)))} style={inputStyle} min={0} max={150} />
+                          <input id="field-mpge_city" type="number" placeholder="e.g. 84" value={form.mpge_city} onChange={e => set('mpge_city', e.target.value === '' ? '' : String(Math.min(Math.max(Number(e.target.value), 0), 150)))} style={inputStyle} className={err('field-mpge_city') ? 'zuro-field-error' : ''} min={0} max={150} />
                         </div>
                         <div>
                           <label htmlFor="field-mpge_highway" style={labelStyle}>Highway MPGe</label>
-                          <input id="field-mpge_highway" type="number" placeholder="e.g. 78" value={form.mpge_highway} onChange={e => set('mpge_highway', e.target.value === '' ? '' : String(Math.min(Math.max(Number(e.target.value), 0), 150)))} style={inputStyle} min={0} max={150} />
+                          <input id="field-mpge_highway" type="number" placeholder="e.g. 78" value={form.mpge_highway} onChange={e => set('mpge_highway', e.target.value === '' ? '' : String(Math.min(Math.max(Number(e.target.value), 0), 150)))} style={inputStyle} className={err('field-mpge_highway') ? 'zuro-field-error' : ''} min={0} max={150} />
                         </div>
                       </>
                     )}
@@ -867,7 +921,7 @@ export default function CarSell() {
                         <label htmlFor="field-range_miles" style={labelStyle}>{form.fuel_type === 'PHEV' ? 'Electric Range (miles)' : 'Range (miles)'}</label>
                         <input id="field-range_miles" type="number" placeholder={form.fuel_type === 'PHEV' ? 'e.g. 42 (EV-only range)' : 'e.g. 358'} value={form.range_miles}
                           onChange={e => set('range_miles', e.target.value === '' ? '' : String(Math.min(Math.max(Number(e.target.value), 0), 600)))}
-                          style={inputStyle} min={0} max={600} />
+                          style={inputStyle} className={err('field-range_miles') ? 'zuro-field-error' : ''} min={0} max={600} />
                       </div>
                     )}
                   </div>
@@ -883,7 +937,7 @@ export default function CarSell() {
                   <div style={{ display: 'grid', gridTemplateColumns: col3, gap: 14 }}>
                     <div>
                       <label htmlFor="field-title_status" style={labelStyle}>Title Status</label>
-                      <select id="field-title_status" value={form.title_status} onChange={e => set('title_status', e.target.value)} style={selectStyle}>
+                      <select id="field-title_status" value={form.title_status} onChange={e => set('title_status', e.target.value)} style={selectStyle} className={err('field-title_status') ? 'zuro-field-error' : ''}>
                         <option value="">Select</option>
                         {TITLE_STATUSES.map(t => <option key={t}>{t}</option>)}
                       </select>
@@ -893,14 +947,14 @@ export default function CarSell() {
                       <input id="field-num_owners" type="number" min="0" placeholder="e.g. 1" value={form.num_owners === '0' ? '' : form.num_owners}
                         onChange={e => { const val = e.target.value; if (val === '') return set('num_owners', ''); if (Number(val) < 0) return; set('num_owners', val) }}
                         onBlur={e => set('num_owners', String(Math.max(0, Number(e.target.value) || 0)))}
-                        style={inputStyle} />
+                        style={inputStyle} className={err('field-num_owners') ? 'zuro-field-error' : ''} />
                     </div>
                     <div>
                       <label htmlFor="field-num_accidents" style={labelStyle}>Number of Accidents</label>
                       <input id="field-num_accidents" type="number" min="0" placeholder="e.g. 0" value={form.num_accidents}
                         onChange={e => { const val = e.target.value; if (val === '') return set('num_accidents', ''); if (Number(val) < 0) return; set('num_accidents', val) }}
                         onBlur={e => set('num_accidents', String(Math.max(0, Number(e.target.value) || 0)))}
-                        style={inputStyle} />
+                        style={inputStyle} className={err('field-num_accidents') ? 'zuro-field-error' : ''} />
                     </div>
                   </div>
 
@@ -955,16 +1009,16 @@ export default function CarSell() {
                     ))}
                   </div>
 
-                <label htmlFor="field-owners_note" style={labelStyle}>Owner's Note *</label>
-                <textarea id="field-owners_note"
-                  placeholder="Tell buyers about the car — your experience owning it, why you're selling, anything they should know..."
-                  value={form.owners_note}
-                  maxLength={800}
-                  onChange={e => set('owners_note', e.target.value.replace(/[^\p{L}\p{N} .,!?'"\-()\n]/gu, '').slice(0, 800))}
-                  rows={6} style={{ ...inputStyle, resize: 'vertical' as const }} />
-                <div style={{ fontSize: '0.8rem', color: form.owners_note.length >= 800 ? '#d32f2f' : '#888', textAlign: 'right' as const }}>
-                  {form.owners_note.length}/800
-                </div>
+                  <label htmlFor="field-owners_note" style={labelStyle}>Owner's Note *</label>
+                  <textarea id="field-owners_note"
+                    placeholder="Tell buyers about the car — your experience owning it, why you're selling, anything they should know..."
+                    value={form.owners_note}
+                    maxLength={800}
+                    onChange={e => set('owners_note', e.target.value.replace(/[^\p{L}\p{N} .,!?'"\-()\n]/gu, '').slice(0, 800))}
+                    rows={6} style={{ ...inputStyle, resize: 'vertical' as const }} className={err('field-owners_note') ? 'zuro-field-error' : ''} />
+                  <div style={{ fontSize: '0.8rem', color: form.owners_note.length >= 800 ? '#d32f2f' : '#888', textAlign: 'right' as const }}>
+                    {form.owners_note.length}/800
+                  </div>
                 </>
               )}
 
@@ -979,7 +1033,7 @@ export default function CarSell() {
                       onDragOver={e => { e.preventDefault(); setIsPhotoDragging(true) }}
                       onDragLeave={e => { e.preventDefault(); setIsPhotoDragging(false) }}
                       onDrop={e => { e.preventDefault(); setIsPhotoDragging(false); if (e.dataTransfer.files?.length) handlePhotoFiles(e.dataTransfer.files) }}
-                      style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', border: isPhotoDragging ? '2px dashed #01a3fc' : '2px dashed #333', borderRadius: 10, padding: '32px', cursor: 'pointer', backgroundColor: isPhotoDragging ? '#0a1a22' : '#111', gap: 20 }}>
+                      style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', border: isPhotoDragging ? '2px dashed #01a3fc' : err('field-photos') ? '2px solid #ff4444' : '2px dashed #333', borderRadius: 10, padding: '32px', cursor: 'pointer', backgroundColor: isPhotoDragging ? '#0a1a22' : '#111', gap: 20 }}>
                       <Camera size={32} color="#cccccc" />
                       <span style={{ color: '#aaa', fontSize: 14, fontFamily: 'system-ui, sans-serif' }}>{isPhotoDragging ? 'Drop photos here' : 'Click or drag photos to upload'}</span>
                       <span style={{ color: '#aaa', fontSize: 12, fontFamily: 'system-ui, sans-serif' }}>JPG, PNG — up to 10 photos</span>
@@ -1016,31 +1070,10 @@ export default function CarSell() {
                             {i === 0 && (
                               <span style={{ position: 'absolute', bottom: 4, left: 4, background: '#01a3fc', color: '#000', fontSize: 9, fontWeight: 900, borderRadius: 4, padding: '2px 5px' }}>COVER</span>
                             )}
-                            {/* MOBILE ARROWS */}
                             {isMobile && (
                               <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 4, gap: 2 }}>
-                                <button
-                                  onClick={e => {
-                                    e.stopPropagation()
-                                    if (i === 0) return
-                                    const updated = [...form.photos]
-                                    ;[updated[i - 1], updated[i]] = [updated[i], updated[i - 1]]
-                                    set('photos', updated)
-                                  }}
-                                  disabled={i === 0}
-                                  style={{ flex: 1, fontSize: 14, background: '#1a1a1a', border: 'none', borderRadius: 4, color: i === 0 ? '#444' : '#fff', cursor: i === 0 ? 'not-allowed' : 'pointer', padding: '2px 0' }}
-                                >←</button>
-                                <button
-                                  onClick={e => {
-                                    e.stopPropagation()
-                                    if (i === form.photos.length - 1) return
-                                    const updated = [...form.photos]
-                                    ;[updated[i], updated[i + 1]] = [updated[i + 1], updated[i]]
-                                    set('photos', updated)
-                                  }}
-                                  disabled={i === form.photos.length - 1}
-                                  style={{ flex: 1, fontSize: 14, background: '#1a1a1a', border: 'none', borderRadius: 4, color: i === form.photos.length - 1 ? '#444' : '#fff', cursor: i === form.photos.length - 1 ? 'not-allowed' : 'pointer', padding: '2px 0' }}
-                                >→</button>
+                                <button onClick={e => { e.stopPropagation(); if (i === 0) return; const updated = [...form.photos]; [updated[i - 1], updated[i]] = [updated[i], updated[i - 1]]; set('photos', updated) }} disabled={i === 0} style={{ flex: 1, fontSize: 14, background: '#1a1a1a', border: 'none', borderRadius: 4, color: i === 0 ? '#444' : '#fff', cursor: i === 0 ? 'not-allowed' : 'pointer', padding: '2px 0' }}>←</button>
+                                <button onClick={e => { e.stopPropagation(); if (i === form.photos.length - 1) return; const updated = [...form.photos]; [updated[i], updated[i + 1]] = [updated[i + 1], updated[i]]; set('photos', updated) }} disabled={i === form.photos.length - 1} style={{ flex: 1, fontSize: 14, background: '#1a1a1a', border: 'none', borderRadius: 4, color: i === form.photos.length - 1 ? '#444' : '#fff', cursor: i === form.photos.length - 1 ? 'not-allowed' : 'pointer', padding: '2px 0' }}>→</button>
                               </div>
                             )}
                             <button onClick={e => { e.stopPropagation(); set('photos', form.photos.filter((_, j) => j !== i)) }}
@@ -1053,10 +1086,8 @@ export default function CarSell() {
                       </div>
                     )}
 
-                    <label htmlFor="field-carfax_url" style={labelStyle}>
-                      Carfax Report Link
-                    </label>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, background: '#111', border: '1px solid #333', borderRadius: 10, padding: '14px 16px' }}>
+                    <label htmlFor="field-carfax_url" style={labelStyle}>Carfax Report Link</label>
+                    <div className={err('field-carfax_url') ? 'zuro-wrapper-error' : ''} style={{ display: 'flex', alignItems: 'center', gap: 10, background: '#111', border: '1px solid #333', borderRadius: 10, padding: '14px 16px' }}>
                       <FileText size={20} color="#aaa" style={{ flexShrink: 0 }} />
                       <input
                         id="field-carfax_url"
@@ -1067,9 +1098,7 @@ export default function CarSell() {
                         style={{ ...inputStyle, border: 'none', background: 'transparent', padding: 0, flex: 1 }}
                       />
                       {form.carfax_url && (
-                        <button
-                          onClick={() => set('carfax_url', '')}
-                          style={{ background: 'none', border: 'none', color: '#ff4444', cursor: 'pointer', display: 'flex', padding: 0 }}>
+                        <button onClick={() => set('carfax_url', '')} style={{ background: 'none', border: 'none', color: '#ff4444', cursor: 'pointer', display: 'flex', padding: 0 }}>
                           <X size={16} />
                         </button>
                       )}
@@ -1094,7 +1123,7 @@ export default function CarSell() {
                   </button>
                 ) : (
                   <button onClick={handleSubmit} disabled={submitting}
-                    style={{ padding: '12px 28px', backgroundColor: submitting ? '#0077bb' : '#01a3fc', color: '#000', border: 'none', borderRadius: 8, fontWeight: 900, fontSize: 14, cursor: submitting ? 'not-allowed' : 'pointer', whiteSpace: 'nowrap'}}>
+                    style={{ padding: '12px 28px', backgroundColor: submitting ? '#0077bb' : '#01a3fc', color: '#000', border: 'none', borderRadius: 8, fontWeight: 900, fontSize: 14, cursor: submitting ? 'not-allowed' : 'pointer', whiteSpace: 'nowrap' }}>
                     {submitting ? 'SUBMITTING...' : 'SUBMIT LISTING'}
                   </button>
                 )}
