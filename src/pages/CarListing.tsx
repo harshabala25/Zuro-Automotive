@@ -469,7 +469,7 @@ async function handleDelete() {
           {user ? (
             <button onClick={handleViewCarfax} disabled={carfaxLoading} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, width: '100%', backgroundColor: 'transparent', border: '1.5px solid #01a3fc', color: '#01a3fc', padding: '12px', borderRadius: 9, fontWeight: 700, fontSize: 13, letterSpacing: '1px', textTransform: 'uppercase', cursor: carfaxLoading ? 'wait' : 'pointer', opacity: carfaxLoading ? 0.6 : 1, fontFamily: 'inherit', minHeight: 44 }}>
               <TI name="file-description" size={16} color="#01a3fc" />
-              {carfaxLoading ? 'LOADING...' : 'CARFAX® REPORT'}
+              {carfaxLoading ? 'LOADING...' : 'Vehicle History Report'}
             </button>
           ) : (
             <a href="/login" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, backgroundColor: 'transparent', border: '1.5px solid #01a3fc', color: '#01a3fc', padding: '12px', borderRadius: 9, fontWeight: 700, fontSize: 13, textDecoration: 'none', letterSpacing: '1px', textTransform: 'uppercase', minHeight: 44 }}>
@@ -480,12 +480,12 @@ async function handleDelete() {
             <p
               style={{
                 fontSize: '10px',
-                color: '#777',
+                color: '#aaa',
                 lineHeight: 1.2,
                 marginTop: '10px'
               }}
             >
-              Disclaimer: Vehicle history information is subject to the accuracy and completeness of data reported to CARFAX®. Please review the full report for complete details.
+              DISCLAIMER: Report provided is seller. Zuro does not host or guarantee this report.
             </p>
         </div>
       )}

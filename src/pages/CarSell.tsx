@@ -198,6 +198,8 @@ export default function CarSell() {
   const [vinError, setVinError] = useState('')
   const [damageInput, setDamageInput] = useState('')
   const [modInput, setModInput] = useState('')
+  const [hasKnownDamage, setHasKnownDamage] = useState(false)
+  const [hasModifications, setHasModifications] = useState(false)
   const [featureInput, setFeatureInput] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
@@ -498,8 +500,8 @@ export default function CarSell() {
       title_status: form.title_status,
       num_owners: parseInt(form.num_owners),
       num_accidents: parseInt(form.num_accidents),
-      known_damage: form.known_damage,
-      modifications: form.modifications,
+      known_damage: hasKnownDamage ? form.known_damage : [],
+      modifications: hasModifications ? form.modifications : [],
       features: form.features,
       owners_note: form.owners_note,
       photos: [], carfax_url: form.carfax_url.trim(),
@@ -575,6 +577,18 @@ export default function CarSell() {
     background: 'none', border: 'none', color: '#ff4444', cursor: 'pointer',
     padding: 0, display: 'flex', alignItems: 'center',
   }
+  const toggleButtonStyle = (active: boolean) => ({
+    padding: '8px 22px',
+    backgroundColor: active ? '#01a3fc' : '#111',
+    color: active ? '#000' : '#aaa',
+    border: active ? '1px solid #01a3fc' : '1px solid #333',
+    borderRadius: 8,
+    fontWeight: 900 as const,
+    fontSize: 13,
+    letterSpacing: 1,
+    cursor: 'pointer' as const,
+    fontFamily: 'system-ui, sans-serif',
+  })
   const sectionDivider = (label: string) => (
     <>
       <div style={{ height: 1, backgroundColor: '#1e1e1e', margin: '24px 0' }} />
@@ -958,39 +972,55 @@ export default function CarSell() {
                     </div>
                   </div>
 
-                  <label htmlFor="field-known_damage" style={labelStyle}>Known Damage</label>
-                  <div style={{ display: 'flex', gap: 8 }}>
-                    <input id="field-known_damage" placeholder="e.g. Scratch on rear bumper — press + or Enter to add." value={damageInput}
-                      onChange={e => setDamageInput(cleanText(e.target.value))}
-                      onKeyDown={e => { if (e.key === 'Enter') { addToArray('known_damage', damageInput); setDamageInput('') } }}
-                      style={{ ...inputStyle, flex: 1 }} />
-                    <button onClick={() => { addToArray('known_damage', damageInput); setDamageInput('') }}
-                      style={{ padding: '0 18px', backgroundColor: '#01a3fc', color: '#000', border: 'none', borderRadius: 8, fontWeight: 900, cursor: 'pointer', fontSize: 20 }}>+</button>
+                  <label style={labelStyle}>Known Damage</label>
+                  <div style={{ display: 'flex', gap: 10 }}>
+                    <button type="button" onClick={() => setHasKnownDamage(false)} style={toggleButtonStyle(!hasKnownDamage)}>No</button>
+                    <button type="button" onClick={() => setHasKnownDamage(true)} style={toggleButtonStyle(hasKnownDamage)}>Yes</button>
                   </div>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 10 }}>
-                    {form.known_damage.map((d, i) => (
-                      <span key={i} style={tagStyle}>{d}
-                        <button onClick={() => removeFromArray('known_damage', i)} style={tagRemoveButtonStyle}><X size={12} /></button>
-                      </span>
-                    ))}
-                  </div>
+                  {hasKnownDamage && (
+                    <>
+                      <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
+                        <input id="field-known_damage" placeholder="e.g. Scratch on rear bumper — press + or Enter to add." value={damageInput}
+                          onChange={e => setDamageInput(cleanText(e.target.value))}
+                          onKeyDown={e => { if (e.key === 'Enter') { addToArray('known_damage', damageInput); setDamageInput('') } }}
+                          style={{ ...inputStyle, flex: 1 }} />
+                        <button onClick={() => { addToArray('known_damage', damageInput); setDamageInput('') }}
+                          style={{ padding: '0 18px', backgroundColor: '#01a3fc', color: '#000', border: 'none', borderRadius: 8, fontWeight: 900, cursor: 'pointer', fontSize: 20 }}>+</button>
+                      </div>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 10 }}>
+                        {form.known_damage.map((d, i) => (
+                          <span key={i} style={tagStyle}>{d}
+                            <button onClick={() => removeFromArray('known_damage', i)} style={tagRemoveButtonStyle}><X size={12} /></button>
+                          </span>
+                        ))}
+                      </div>
+                    </>
+                  )}
 
-                  <label htmlFor="field-modifications" style={labelStyle}>Modifications</label>
-                  <div style={{ display: 'flex', gap: 8 }}>
-                    <input id="field-modifications" placeholder="e.g. Aftermarket exhaust — press + or Enter to add." value={modInput}
-                      onChange={e => setModInput(cleanText(e.target.value))}
-                      onKeyDown={e => { if (e.key === 'Enter') { addToArray('modifications', modInput); setModInput('') } }}
-                      style={{ ...inputStyle, flex: 1 }} />
-                    <button onClick={() => { addToArray('modifications', modInput); setModInput('') }}
-                      style={{ padding: '0 18px', backgroundColor: '#01a3fc', color: '#000', border: 'none', borderRadius: 8, fontWeight: 900, cursor: 'pointer', fontSize: 20 }}>+</button>
+                  <label style={labelStyle}>Modifications</label>
+                  <div style={{ display: 'flex', gap: 10 }}>
+                    <button type="button" onClick={() => setHasModifications(false)} style={toggleButtonStyle(!hasModifications)}>No</button>
+                    <button type="button" onClick={() => setHasModifications(true)} style={toggleButtonStyle(hasModifications)}>Yes</button>
                   </div>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 10 }}>
-                    {form.modifications.map((m, i) => (
-                      <span key={i} style={tagStyle}>{m}
-                        <button onClick={() => removeFromArray('modifications', i)} style={tagRemoveButtonStyle}><X size={12} /></button>
-                      </span>
-                    ))}
-                  </div>
+                  {hasModifications && (
+                    <>
+                      <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
+                        <input id="field-modifications" placeholder="e.g. Aftermarket exhaust — press + or Enter to add." value={modInput}
+                          onChange={e => setModInput(cleanText(e.target.value))}
+                          onKeyDown={e => { if (e.key === 'Enter') { addToArray('modifications', modInput); setModInput('') } }}
+                          style={{ ...inputStyle, flex: 1 }} />
+                        <button onClick={() => { addToArray('modifications', modInput); setModInput('') }}
+                          style={{ padding: '0 18px', backgroundColor: '#01a3fc', color: '#000', border: 'none', borderRadius: 8, fontWeight: 900, cursor: 'pointer', fontSize: 20 }}>+</button>
+                      </div>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 10 }}>
+                        {form.modifications.map((m, i) => (
+                          <span key={i} style={tagStyle}>{m}
+                            <button onClick={() => removeFromArray('modifications', i)} style={tagRemoveButtonStyle}><X size={12} /></button>
+                          </span>
+                        ))}
+                      </div>
+                    </>
+                  )}
 
                   <label htmlFor="field-features" style={labelStyle}>Features</label>
                   <div style={{ display: 'flex', gap: 8 }}>
@@ -1036,7 +1066,7 @@ export default function CarSell() {
                       style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', border: isPhotoDragging ? '2px dashed #01a3fc' : err('field-photos') ? '2px solid #ff4444' : '2px dashed #333', borderRadius: 10, padding: '32px', cursor: 'pointer', backgroundColor: isPhotoDragging ? '#0a1a22' : '#111', gap: 20 }}>
                       <Camera size={32} color="#cccccc" />
                       <span style={{ color: '#aaa', fontSize: 14, fontFamily: 'system-ui, sans-serif' }}>{isPhotoDragging ? 'Drop photos here' : 'Click or drag photos to upload'}</span>
-                      <span style={{ color: '#aaa', fontSize: 12, fontFamily: 'system-ui, sans-serif' }}>JPG, PNG — up to 10 photos</span>
+                      <span style={{ color: '#aaa', fontSize: 12, fontFamily: 'system-ui, sans-serif' }}>10 Photos - 5 exterior/interior required</span>
                       <input id="field-photos" type="file" accept="image/*" multiple style={{ display: 'none' }}
                         onChange={e => { if (e.target.files) { handlePhotoFiles(e.target.files); e.target.value = '' } }} />
                     </label>
@@ -1086,7 +1116,7 @@ export default function CarSell() {
                       </div>
                     )}
 
-                    <label htmlFor="field-carfax_url" style={labelStyle}>Carfax Report Link</label>
+                    <label htmlFor="field-carfax_url" style={labelStyle}>Vehicle History Report Link</label>
                     <div className={err('field-carfax_url') ? 'zuro-wrapper-error' : ''} style={{ display: 'flex', alignItems: 'center', gap: 10, background: '#111', border: '1px solid #333', borderRadius: 10, padding: '14px 16px' }}>
                       <FileText size={20} color="#aaa" style={{ flexShrink: 0 }} />
                       <input
@@ -1104,7 +1134,7 @@ export default function CarSell() {
                       )}
                     </div>
                     <p style={{ color: '#aaa', fontSize: 14, fontFamily: 'system-ui, sans-serif', marginTop: 8 }}>
-                      Download your CarFax report and upload it to Google Drive. In Google Drive, right-click your Carfax PDF → Share → "Anyone with the link" → Copy link and paste it here. MAKE SURE IT IS ON VIEW.
+                      Download your Vehicle History Report and upload it to Google Drive. In Google Drive, right-click your Carfax PDF → Share → "Anyone with the link" → Copy link and paste it here. MAKE SURE IT IS ON VIEW AND THAT OTHER PEOPLE CAN'T SHARE IT, INTERACT WITH IT, OR DOWNLOAD IT.
                     </p>
                   </div>
                 </>
