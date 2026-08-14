@@ -311,10 +311,17 @@ export default function AdminPanel() {
 
     const carName = `${selected.year} ${selected.make} ${selected.model} ${selected.trim}`
 
-    for (const photoUrl of selected.photos || []) {
-      const filePath = decodeURIComponent(photoUrl.split('/car-photos/')[1])
-      const { error: photoError } = await supabase.storage.from('car-photos').remove([filePath])
-      if (photoError) console.error('Failed to delete photo:', filePath, photoError)
+    if (selected.photos?.length > 0) {
+      const filePaths = selected.photos.map(url => {
+        const raw = url.split('/car-photos/')[1]
+        return decodeURIComponent(raw)
+      })
+
+      const { error: photoError } = await supabase.storage
+        .from('car-photos')
+        .remove(filePaths)
+
+      if (photoError) console.error('Photo deletion error:', photoError)
     }
 
     const { error } = await supabase.from('listings').delete().eq('id', selected.id)
@@ -356,10 +363,17 @@ export default function AdminPanel() {
 
     setActionLoading(true)
 
-    for (const photoUrl of selected.photos || []) {
-      const filePath = decodeURIComponent(photoUrl.split('/car-photos/')[1])
-      const { error: photoError } = await supabase.storage.from('car-photos').remove([filePath])
-      if (photoError) console.error('Failed to delete photo:', filePath, photoError)
+    if (selected.photos?.length > 0) {
+      const filePaths = selected.photos.map(url => {
+        const raw = url.split('/car-photos/')[1]
+        return decodeURIComponent(raw)
+      })
+
+      const { error: photoError } = await supabase.storage
+        .from('car-photos')
+        .remove(filePaths)
+
+      if (photoError) console.error('Photo deletion error:', photoError)
     }
 
     const { error } = await supabase.from('listings').delete().eq('id', selected.id)
@@ -371,6 +385,8 @@ export default function AdminPanel() {
     setSelected(null)
     setActionLoading(false)
   }
+
+
 
   if (!authed) return null
 
@@ -694,7 +710,7 @@ export default function AdminPanel() {
                   rel="noopener noreferrer"
                   style={{ display: 'inline-flex', alignItems: 'center', gap: 8, backgroundColor: '#111', border: '1px solid #333', borderRadius: 8, padding: '12px 20px', color: '#fff', fontSize: 14, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', textDecoration: 'none' }}
                 >
-                  View Carfax Report
+                  View Vehicle History Report
                 </a>
               )}
 
