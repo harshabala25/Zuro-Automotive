@@ -149,7 +149,7 @@ function SellGuideModal({ onClose }: { onClose: () => void }) {
           {[
             { n: 1, title: 'Location & basic info', desc: 'State, City, ZIP, and your VIN — Auto-Fill pre-populates make, model, year, engine, and drivetrain. Worth double-checking' },
             { n: 2, title: 'Vehicle details', desc: 'Colors, Mileage, Asking price, Horsepower, and Fuel Efficiency.' },
-            { n: 3, title: 'Condition & extras', desc: "Title Status, Owners, Accidents, Damage, Mos, Features, and a short Owner's note." },
+            { n: 3, title: 'Condition & extras', desc: "Title Status, Owners, Accidents, Known Damage and Modifications if there, Features, and a short Owner's note." },
             { n: 4, title: 'Photos & documents', desc: '10 photos (5 exterior, 5 interior) plus a Google Drive link to your Vehicle History Report — both required.' },
           ].map(({ n, title, desc }) => (
             <div key={n} style={{ display: 'flex', gap: 14, background: '#111', border: '1px solid #1e1e1e', borderRadius: 10, padding: '14px 16px', marginBottom: 10 }}>

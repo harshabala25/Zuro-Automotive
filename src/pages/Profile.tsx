@@ -143,18 +143,27 @@ export default function Profile() {
     }
   }
 
-  async function handleSave() {
+    async function handleSave() {
     if (!currentUser || !profile) return
+    console.log('avatarFile at save time:', avatarFile) // TEMP DEBUG
     setSaving(true)
     setSaveMsg('')
     let avatarUrl = profile.avatar_url
 
+
     if (avatarFile) {
-      const filePath = `${currentUser.id}/avatar_${Date.now()}`
-      const { error: uploadError } = await supabase.storage.from('avatars').upload(filePath, avatarFile, { upsert: true })
+      const filePath = `${currentUser.id}/avatar` // fixed path, no Date.now()
+      const { error: uploadError } = await supabase.storage
+        .from('avatars')
+        .upload(filePath, avatarFile, { upsert: true })
+
       if (!uploadError) {
         const { data } = supabase.storage.from('avatars').getPublicUrl(filePath)
-        avatarUrl = data.publicUrl
+        avatarUrl = `${data.publicUrl}?t=${Date.now()}` // cache-bust so the new image actually shows
+      } else {
+        setSaveMsg('Error uploading avatar: ' + uploadError.message)
+        setSaving(false)
+        return // don't save profile if avatar upload failed
       }
     }
 
