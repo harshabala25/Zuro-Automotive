@@ -150,7 +150,7 @@ function SellGuideModal({ onClose }: { onClose: () => void }) {
             { n: 1, title: 'Location & basic info', desc: 'State, City, ZIP, and your VIN — Auto-Fill pre-populates make, model, year, engine, and drivetrain. Worth double-checking' },
             { n: 2, title: 'Vehicle details', desc: 'Colors, Mileage, Asking price, Horsepower, and Fuel Efficiency.' },
             { n: 3, title: 'Condition & extras', desc: "Title Status, Owners, Accidents, Damage, Mos, Features, and a short Owner's note." },
-            { n: 4, title: 'Photos & documents', desc: '10 photos (5 exterior, 5 interior) plus a Google Drive link to your Carfax report — both required.' },
+            { n: 4, title: 'Photos & documents', desc: '10 photos (5 exterior, 5 interior) plus a Google Drive link to your Vehicle History Report — both required.' },
           ].map(({ n, title, desc }) => (
             <div key={n} style={{ display: 'flex', gap: 14, background: '#111', border: '1px solid #1e1e1e', borderRadius: 10, padding: '14px 16px', marginBottom: 10 }}>
               <div style={{ width: 28, height: 28, borderRadius: '50%', background: '#01a3fc', color: '#000', fontSize: 13, fontWeight: 900, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>{n}</div>
@@ -163,7 +163,7 @@ function SellGuideModal({ onClose }: { onClose: () => void }) {
           <div style={{ height: 1, background: '#1e1e1e', margin: '20px 0' }} />
           <p style={{ color: '#01a3fc', fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 12 }}>Have these ready</p>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 20 }}>
-            {['Your 17-character VIN', 'Carfax report (Google Drive link)', 'Current mileage', 'Your asking price', '10 photos (5 exterior, 5 interior)', 'Title status'].map(item => (
+            {['Your 17-character VIN', 'Vehicle History Report (Google Drive link)', 'Current mileage', 'Your asking price', '10 photos (5 exterior, 5 interior)', 'Title status'].map(item => (
               <div key={item} style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#aaa', fontSize: 13 }}>
                 <div style={{ width: 7, height: 7, borderRadius: '50%', background: '#01a3fc', flexShrink: 0 }} />
                 {item}
@@ -406,7 +406,7 @@ export default function CarSell() {
     if (s === 3) {
       if (form.photos.length !== 10) errs.push('Exactly 10 photos are required.')
       if (!form.carfax_url.trim()) {
-        errs.push('A Carfax report link is required.')
+        errs.push('A Link to the Vehicle History Report is Required.')
       } else if (!/^https:\/\/(drive\.google\.com|docs\.google\.com)\//.test(form.carfax_url.trim())) {
         errs.push('Please enter a valid Google Drive link (must start with https://drive.google.com or https://docs.google.com).')
       }
@@ -453,7 +453,7 @@ export default function CarSell() {
       'Number of accidents is required.': 'field-num_accidents',
       "Owner's note is required.": 'field-owners_note',
       'Exactly 10 photos are required.': 'field-photos',
-      'A Carfax report link is required.': 'field-carfax_url',
+      'A Vehicle History Report link is required.': 'field-carfax_url',
       'Please enter a valid Google Drive link (must start with https://drive.google.com or https://docs.google.com).': 'field-carfax_url',
     }
     return new Set(errs.map(e => map[e]).filter(Boolean))
@@ -1134,7 +1134,7 @@ export default function CarSell() {
                       )}
                     </div>
                     <p style={{ color: '#aaa', fontSize: 14, fontFamily: 'system-ui, sans-serif', marginTop: 8 }}>
-                      Download your Vehicle History Report and upload it to Google Drive. In Google Drive, right-click your Carfax PDF → Share → "Anyone with the link" → Copy link and paste it here. MAKE SURE IT IS ON VIEW AND THAT OTHER PEOPLE CAN'T SHARE IT, INTERACT WITH IT, OR DOWNLOAD IT.
+                      Download your Vehicle History Report and upload it to Google Drive. In Google Drive, right-click your Vehicle History Report PDF → Share → "Anyone with the link" → Copy link and paste it here. MAKE SURE IT IS ON VIEW AND THAT OTHER PEOPLE CAN'T SHARE IT, INTERACT WITH IT, OR DOWNLOAD IT.
                     </p>
                   </div>
                 </>
