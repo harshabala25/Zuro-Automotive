@@ -164,7 +164,7 @@ function SellGuideModal({ onClose }: { onClose: () => void }) {
           <div style={{ background: '#0a1a0a', border: '1px solid #1a3a1a', borderRadius: 8, padding: '12px 16px' }}>
             <div style={{ color: '#888', fontSize: 13, lineHeight: 1.5 }}>
               <strong style={{ color: '#aaa' }}>Photo Policy:</strong>
-              <p>5 exterior, 5 interior — no professional photography needed, just good lighting. Listings missing either won't be approved.             
+              <p> No professional photography needed, just try your best. Listings missing either won't be approved.             
                 Listings are reviewed before going live — we'll let you know once yours is approved.</p>
             </div>
           </div>
