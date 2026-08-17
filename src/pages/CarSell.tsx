@@ -1134,7 +1134,7 @@ export default function CarSell() {
                       )}
                     </div>
                     <p style={{ color: '#aaa', fontSize: 14, fontFamily: 'system-ui, sans-serif', marginTop: 8 }}>
-                      Download your Vehicle History Report and upload it to Google Drive. In Google Drive, right-click your Vehicle History Report PDF → Share → "Anyone with the link" → Copy link and paste it here. MAKE SURE IT IS ON VIEW AND THAT OTHER PEOPLE CAN'T SHARE IT, INTERACT WITH IT, OR DOWNLOAD IT.
+                      Download your Vehicle History Report and upload it to Google Drive. In Google Drive, right-click your Vehicle History Report PDF → Share → "Anyone with the link" → Copy link and paste it here. MAKE SURE IT IS ON VIEW AND THAT OTHER PEOPLE CAN'T SHARE IT, INTERACT WITH IT, OR DOWNLOAD IT to ensure security
                     </p>
                   </div>
                 </>
