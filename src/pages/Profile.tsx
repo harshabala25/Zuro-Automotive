@@ -6,7 +6,7 @@ import BottomBar from '../pages/BottomBar'
 import { MapPin, Gauge } from 'lucide-react';
 import { Camera } from "lucide-react";
 
-const ADMIN_UID = 'f82273a7-2fd5-4619-84df-a9bad044654a'
+const ADMIN_UID = import.meta.env.VITE_ADMIN_UID
 
 // Hook to detect mobile viewport
 function useIsMobile() {
