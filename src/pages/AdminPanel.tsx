@@ -420,7 +420,7 @@ export default function AdminPanel() {
           onClick={() => { window.location.href = '/profile' }}
           style={{ background: '#01a3fc', border: '2px solid #000', borderRadius: 6, padding: '8px 16px', color: '#000', fontWeight: 700, fontSize: 13, cursor: 'pointer' }}
         >
-          Profile
+          Back
         </button>
       </div>
 
