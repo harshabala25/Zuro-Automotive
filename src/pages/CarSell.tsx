@@ -161,15 +161,6 @@ function SellGuideModal({ onClose }: { onClose: () => void }) {
             </div>
           ))}
           <div style={{ height: 1, background: '#1e1e1e', margin: '20px 0' }} />
-          <p style={{ color: '#01a3fc', fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 12 }}>Have these ready</p>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 20 }}>
-            {['Your 17-character VIN', 'Vehicle History Report (Google Drive link)', 'Current mileage', 'Your asking price', '10 photos (5 exterior, 5 interior)', 'Title status'].map(item => (
-              <div key={item} style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#aaa', fontSize: 13 }}>
-                <div style={{ width: 7, height: 7, borderRadius: '50%', background: '#01a3fc', flexShrink: 0 }} />
-                {item}
-              </div>
-            ))}
-          </div>
           <div style={{ background: '#0a1a0a', border: '1px solid #1a3a1a', borderRadius: 8, padding: '12px 16px' }}>
             <div style={{ color: '#888', fontSize: 13, lineHeight: 1.5 }}>
               <strong style={{ color: '#aaa' }}>Photo Policy:</strong>
