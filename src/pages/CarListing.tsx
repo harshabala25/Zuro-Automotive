@@ -474,7 +474,7 @@ async function handleDelete() {
           ) : (
             <a href="/login" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, backgroundColor: 'transparent', border: '1.5px solid #01a3fc', color: '#01a3fc', padding: '12px', borderRadius: 9, fontWeight: 700, fontSize: 13, textDecoration: 'none', letterSpacing: '1px', textTransform: 'uppercase', minHeight: 44 }}>
               <TI name="file-description" size={16} color="#01a3fc" />
-              LOG IN TO VIEW CARFAX
+              LOG IN TO VIEW VEHICLE HISTORY REPORT
             </a>
           )}
             <p
