@@ -634,9 +634,9 @@ export default function CarBuy() {
 
           <div style={{ paddingBottom: 36 }}>
             {loading ? (
-              <div style={{ textAlign: 'center', color: '#fff', padding: '80px 0', fontFamily: 'system-ui, sans-serif' }}>Loading listings...</div>
+              <div style={{ textAlign: 'center', color: '#555', padding: '80px 0', fontFamily: 'system-ui, sans-serif' }}>Loading listings...</div>
             ) : filtered.length === 0 ? (
-              <div style={{ textAlign: 'center', color: '#fff', padding: '80px 0', fontFamily: 'system-ui, sans-serif' }}>No listings match your filters.</div>
+              <div style={{ textAlign: 'center', color: '#555', padding: '80px 0', fontFamily: 'system-ui, sans-serif' }}>No listings match your filters.</div>
             ) : (
               <div style={{
                 display: 'grid',
