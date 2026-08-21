@@ -1125,8 +1125,15 @@ export default function CarSell() {
                       )}
                     </div>
                     <p style={{ color: '#aaa', fontSize: 14, fontFamily: 'system-ui, sans-serif', marginTop: 8 }}>
-                      Download your Vehicle History Report and upload it to Google Drive. In Google Drive, right-click your Vehicle History Report PDF → Share → "Anyone with the link" → Copy link and paste it here. MAKE SURE IT IS ON VIEW AND THAT OTHER PEOPLE CAN'T SHARE IT, EDIT IT, OR DOWNLOAD IT to ensure safety
-                    </p>
+                      <p>Download your Vehicle History Report and upload it to Google Drive.</p> 
+                      Right-click the file → Share → set access to "Anyone with the link" 
+                      → under the settings, turn off "Viewers can download, print, and copy" 
+                      → copy the link and paste it here.     
+                      
+                      <p>This keeps your report viewable by buyers without letting anyone download or edit the file.
+                      </p>
+                      
+                      </p>
                   </div>
                 </>
               )}
