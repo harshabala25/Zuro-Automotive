@@ -186,7 +186,7 @@ async function handleDelete() {
 
   if (loading) return (
     <div style={{ backgroundColor: '#060606', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <p style={{ color: '#01a3fc', fontFamily: 'system-ui, sans-serif', letterSpacing: 2, fontSize: 13, textTransform: 'uppercase' }}>Loading Car...</p>
+      <p style={{ color: '#555', fontFamily: 'system-ui, sans-serif', letterSpacing: 2, fontSize: 13, textTransform: 'uppercase' }}>Loading Car...</p>
     </div>
   )
 
