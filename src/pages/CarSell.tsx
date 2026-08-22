@@ -147,8 +147,8 @@ function SellGuideModal({ onClose }: { onClose: () => void }) {
           </p>
           <p style={{ color: '#01a3fc', fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: 'uppercase', marginBottom: 12 }}>The 4 steps</p>
           {[
-            { n: 1, title: 'Location & basic info', desc: 'State, City, ZIP, and your VIN — Auto-Fill pre-populates make, model, year, engine, and drivetrain. Worth double-checking' },
-            { n: 2, title: 'Vehicle details', desc: 'Colors, Mileage, Asking price, Horsepower, and Fuel Efficiency.' },
+            { n: 1, title: 'Location & basic info', desc: 'State, City, ZIP, and your VIN — Auto-Fill pre-populates make, model, year, engine, and drivetrain. Worth double checking' },
+            { n: 2, title: 'Vehicle details', desc: 'Colors, Mileage, Asking price, Horsepower, and Fuel Efficiency. Auto-Fill pre-populates most of these, but please double check' },
             { n: 3, title: 'Condition & extras', desc: "Title Status, Owners, Accidents, Known Damage and Modifications if there, Features, and a short Owner's note." },
             { n: 4, title: 'Photos & documents', desc: '10 photos (5 exterior, 5 interior) plus a Google Drive link to your Vehicle History Report — both required.' },
           ].map(({ n, title, desc }) => (
