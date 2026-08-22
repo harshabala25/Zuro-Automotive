@@ -43,6 +43,12 @@ function useIsMobile() {
   return isMobile;
 }
 
+const SUGGESTED_QUESTIONS = [
+  "What else is included with the sale?",
+  "Any mechanical issues, even minor ones?",
+  "Can I schedule a time to see it in person?",
+];
+
 export default function Messages() {
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [selectedConvo, setSelectedConvo] = useState<Conversation | null>(null);
@@ -57,6 +63,7 @@ export default function Messages() {
   const [sendError, setSendError] = useState<string | null>(null);
   const sendErrorTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isMobile = useIsMobile();
+  const [showSuggestions, setShowSuggestions] = useState(true);
   // On mobile: 'list' shows the sidebar, 'chat' shows the conversation
   const [mobileView, setMobileView] = useState<'list' | 'chat'>('list');
 
@@ -177,6 +184,7 @@ export default function Messages() {
       markConvoAsRead(selectedConvo.id);
     };
     fetchMessages();
+    setShowSuggestions(true);
 
     const channel = supabase
       .channel(`messages:${selectedConvo.id}`)
@@ -225,10 +233,11 @@ export default function Messages() {
     sendErrorTimeout.current = setTimeout(() => setSendError(null), 4000);
   }
 
-  const sendMessage = async () => {
-    if (!newMessage.trim() || !selectedConvo || !currentUser) return;
-    const content = newMessage.trim();
+  const sendMessage = async (overrideContent?: string) => {
+    const content = (overrideContent ?? newMessage).trim();
+    if (!content || !selectedConvo || !currentUser) return;
     setNewMessage('');
+    setShowSuggestions(false);
     const tempId = `temp-${Date.now()}`;
     const optimistic: Message = { id: tempId, created_at: new Date().toISOString(), conversation_id: selectedConvo.id, sender_id: currentUser.id, content, is_read: false, profiles: null };
     setMessages((prev) => [...prev, optimistic]);
@@ -376,6 +385,43 @@ export default function Messages() {
             <div ref={messagesEndRef} />
           </div>
 
+          {/* SUGGESTED QUESTIONS - only shown before the first message in a chat */}
+          {showSuggestions && messages.length === 0 && (
+            <div style={{ padding: isMobile ? '0 12px 10px' : '0 24px 12px', display: 'flex', flexDirection: 'column', gap: 8 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ fontSize: 11, color: '#555', fontWeight: 700, letterSpacing: 0.5 }}>SUGGESTED QUESTIONS</span>
+                <button
+                  onClick={() => setShowSuggestions(false)}
+                  style={{ background: 'none', border: 'none', color: '#555', cursor: 'pointer', fontSize: 16, lineHeight: 1, padding: 4 }}
+                  aria-label="Dismiss suggestions"
+                >
+                  ×
+                </button>
+              </div>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                {SUGGESTED_QUESTIONS.map((q) => (
+                  <button
+                    key={q}
+                    onClick={() => sendMessage(q)}
+                    style={{
+                      backgroundColor: '#111',
+                      border: '1px solid #333',
+                      borderRadius: 18,
+                      padding: '8px 14px',
+                      color: '#01a3fc',
+                      fontSize: 13,
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    {q}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* MESSAGE INPUT */}
           <div style={{ padding: isMobile ? '10px 12px' : '16px 24px', borderTop: '1px solid #222', display: 'flex', flexDirection: 'column', gap: 8 }}>
             {sendError && <div style={{ fontSize: 12, color: '#ff6b6b', padding: '0 4px' }}>{sendError}</div>}
@@ -391,7 +437,7 @@ export default function Messages() {
                 onKeyDown={handleKeyDown}
                 style={{ flex: 1, backgroundColor: '#111', border: '1px solid #333', borderRadius: 24, padding: '11px 16px', color: '#fff', fontSize: isMobile ? 16 : 14, resize: 'none' as const, outline: 'none', maxHeight: 120 }}
               />
-              <button onClick={sendMessage} style={{ backgroundColor: '#01a3fc', border: 'none', borderRadius: '50%', width: 44, height: 44, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', flexShrink: 0 }}>
+              <button onClick={() => sendMessage()} style={{ backgroundColor: '#01a3fc', border: 'none', borderRadius: '50%', width: 44, height: 44, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', flexShrink: 0 }}>
                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#000" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ transform: 'translate(-1px, -0.25px)' }}>
                 <line x1="22" y1="2" x2="11" y2="13" />
                 <polygon points="22 2 15 22 11 13 2 9 22 2" />
